@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from collections import Sequence
-from typing import TypeVar
+from typing import TypeVar, Sequence
 
 Entity = TypeVar("Entity")
 
