@@ -1,10 +1,11 @@
+from src.application.repositories.user_repository import IUserRepository
 from src.domain.entities.user import UserEntity
 from src.infrastructure.database.sqlalchemy.models import UserModel
 from src.infrastructure.database.sqlalchemy.repositories.base_repository import \
     BaseAsyncRepository, DbModel
 
 
-class UserRepository(BaseAsyncRepository):
+class UserRepository(BaseAsyncRepository, IUserRepository):
     model = UserModel
 
     @staticmethod

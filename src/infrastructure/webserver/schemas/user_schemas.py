@@ -6,7 +6,7 @@ from src.domain.enums import AuthType
 class UserBase(BaseModel):
     first_name: str
     last_name: str
-    email: str
+    email: EmailStr
     auth_type: AuthType
 
 
@@ -20,3 +20,13 @@ class UserUpdate(UserBase):
 
 class UserDetail(UserBase):
     id: int
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

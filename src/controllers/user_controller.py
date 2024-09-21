@@ -2,6 +2,7 @@ from typing import TypeAlias, Annotated
 
 from fastapi import Depends
 
+from src.application.use_cases.user.create_user import CreateUserUseCase
 from src.domain.entities.user import UserEntity
 from src.infrastructure.database.sqlalchemy.config import get_db_session
 from src.infrastructure.database.sqlalchemy.repositories.user_repository import \
@@ -16,10 +17,10 @@ class UserController:
         self.user_repository = UserRepository(db_connection=db_connection)
 
     async def create_user(self, request_data: dict):
-        user = UserEntity(id=None, **request_data)
-        await self.user_repository.save_one(entity=user)
-        await self.user_repository.save_changes()
-        return user
+        create_user_use_case = CreateUserUseCase(
+            user_repository=self.user_repository
+        )
+        return await create_user_use_case.execute(request_data=request_data)
 
     async def fetch_users(self):
         return await self.user_repository.fetch_many()

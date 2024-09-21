@@ -1,12 +1,23 @@
 from typing import List
 
-from starlette import status
 from fastapi import APIRouter
+from datetime import timedelta
+from typing import Annotated
 
-from src.controllers.user import UserControllerDep
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.controllers.user_controller import UserControllerDep
+from src.infrastructure.database.sqlalchemy.config import get_db_session, \
+    DbSession
+from src.infrastructure.database.sqlalchemy.models import UserModel
 from src.infrastructure.webserver.dependencies import IntPath
+from src.infrastructure.webserver.settings import settings
 from src.infrastructure.webserver.schemas.user_schemas import UserCreate, \
-    UserDetail, UserUpdate
+    UserDetail, UserUpdate, Token, UserLogin
+from src.infrastructure.authentication.jwt_authentication import \
+    JWTAuthenticationDep, UserSession
 
 router = APIRouter()
 
@@ -72,3 +83,20 @@ async def delete_user(
 ):
     return await user_controller.delete_user(user_id=user_id)
 
+
+@router.post("/jwt-create", response_model=Token)
+async def create_jwt(
+    request_data: UserLogin,
+    jwt_authentication: JWTAuthenticationDep
+):
+    return await jwt_authentication.authenticate(
+        email=request_data.email,
+        password=request_data.password
+    )
+
+
+@router.get("/profile/me", response_model=UserDetail)
+async def read_users_me(
+    current_user: UserSession,
+):
+    return current_user
