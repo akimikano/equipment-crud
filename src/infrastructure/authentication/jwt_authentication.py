@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException, status, Header
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import AuthType
 from src.domain.services.auth import verify_password
 from src.infrastructure.database.sqlalchemy.config import get_db_session, \
     DbSession
@@ -114,5 +115,22 @@ async def get_user_session(
     return await jwt_authentication.get_current_user(token=token)
 
 
+async def get_admin_session(
+    db_connection: DbSession,
+    token: Annotated[str, Header(...)]
+):
+    user = await get_user_session(db_connection=db_connection, token=token)
+
+    if user.auth_type != AuthType.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not permitted.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user
+
+
 JWTAuthenticationDep: TypeAlias = Annotated[JWTAuthentication, Depends(JWTAuthentication)]
 UserSession: TypeAlias = Annotated[UserModel, Depends(get_user_session)]
+AdminSession: TypeAlias = Annotated[UserModel, Depends(get_admin_session)]

@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class EquipmentData:
+class EquipmentDataEntity:
     id: Optional[int]
     key: str
     value: str

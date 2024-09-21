@@ -4,7 +4,7 @@ from typing import Optional
 
 
 @dataclass
-class Equipment:
+class EquipmentEntity:
     id: Optional[int]
     equipment_type: str
     model: str

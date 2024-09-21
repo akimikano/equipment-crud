@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class EquipmentAlert:
+class EquipmentAlertEntity:
     id: Optional[int]
     alert_type: str
     message: str

@@ -13,5 +13,5 @@ class UserModel(Base):
     first_name: Mapped[str] = mapped_column(String(255))
     last_name: Mapped[str] = mapped_column(String(255))
     email: Mapped[str] = mapped_column(String(255))
-    auth_type: Mapped[str] = mapped_column(Enum(AuthType))
+    auth_type: Mapped[str] = mapped_column(Enum(AuthType), default=AuthType.USER)
     password_hash: Mapped[str] = mapped_column(Text)

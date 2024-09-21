@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from starlette import status
+from fastapi import FastAPI, HTTPException
 
-from src.infrastructure.webserver.routers import user_router
+from src.application.exceptions import ApplicationException, NotFound
+from src.infrastructure.webserver.routers import user_router, equipment_router
 
 app = FastAPI(
     title="API",
@@ -10,4 +12,21 @@ app = FastAPI(
 )
 
 
+@app.exception_handler(NotFound)
+async def not_found_exception_handler(request, exc):
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=exc.message
+    )
+
+
+@app.exception_handler(ApplicationException)
+async def application_exception_handler(request, exc):
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=exc.message
+    )
+
+
 app.include_router(user_router, prefix="/users")
+app.include_router(equipment_router, prefix="/equipments")
