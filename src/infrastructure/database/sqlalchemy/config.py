@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
+from src.infrastructure.webserver.settings import settings
 
 engine = create_async_engine(
-    url="postgresql+asyncpg://demo:demo@localhost:5432/equipmentdb",
+    url=f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.POSTGRES_DB}",
     echo=True
 )
 
