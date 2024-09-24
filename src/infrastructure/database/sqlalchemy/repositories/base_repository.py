@@ -46,18 +46,18 @@ class BaseAsyncRepository(AbstractRepository):
     def to_entity(db_instance: DbModel):
         return None
 
+    def query(self):
+        return select(self.model).order_by(desc(self.model.id))
+
     async def fetch_many(self, **filters):
-        query = select(self.model).order_by(desc(self.model.id))
+        query = self.query()
         result = await self.db_connection.execute(query)
         db_instances = result.scalars().all()
         return [self.to_entity(db_instance) for db_instance in db_instances]
 
     async def fetch_one(self, *, pk: int, **filters):
-        query = (
-            select(self.model)
-            .filter(self.model.id == pk)
-            .order_by(desc(self.model.id)))
-
+        query = self.query()
+        query = query.filter(self.model.id == pk)
         result = await self.db_connection.execute(query)
         db_instance = result.scalar_one_or_none()
         return self.to_entity(db_instance=db_instance)

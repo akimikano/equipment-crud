@@ -7,6 +7,7 @@ from src.controllers.equipment_controller import EquipmentControllerDep
 from src.infrastructure.webserver.dependencies import IntPath
 from src.infrastructure.webserver.schemas.equpment_schemas import \
     EquipmentDetail, EquipmentCreate
+from src.infrastructure.authentication.jwt_authentication import UserSession
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ router = APIRouter()
 )
 async def get_equipments(
     equipment_controller: EquipmentControllerDep,
-    # admin: AdminSession, # noqa
+    user: UserSession, # noqa
 ):
     return await equipment_controller.fetch_equipments()
 
@@ -30,8 +31,8 @@ async def get_equipments(
 )
 async def get_equipment(
     equipment_controller: EquipmentControllerDep,
-    equipment_id: IntPath
-    # admin: AdminSession, # noqa
+    equipment_id: IntPath,
+    user: UserSession # noqa
 ):
     return await equipment_controller.fetch_equipment(equipment_id=equipment_id)
 
@@ -43,7 +44,7 @@ async def get_equipment(
 )
 async def create_equipment(
     equipment_controller: EquipmentControllerDep,
-    # admin: AdminSession, # noqa
+    user: UserSession, # noqa
     request_data: EquipmentCreate
 ):
     return await equipment_controller.create_equipment(
@@ -58,7 +59,7 @@ async def create_equipment(
 )
 async def update_equipment(
     equipment_controller: EquipmentControllerDep,
-    # admin: AdminSession, # noqa
+    user: UserSession, # noqa
     equipment_id: IntPath,
     request_data: EquipmentCreate
 ):
@@ -74,7 +75,7 @@ async def update_equipment(
 )
 async def delete_equipment(
     equipment_controller: EquipmentControllerDep,
-    # admin: AdminSession, # noqa
+    user: UserSession, # noqa
     equipment_id: IntPath,
 ):
     return await equipment_controller.delete_equipment(
